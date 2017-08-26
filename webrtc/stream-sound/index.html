@@ -1,0 +1,42 @@
+<!doctype html>
+<canvas id="canvas" width="120" height="20"></canvas>
+<div>
+    <svg width="25" height="20"></svg>
+    <input type="range" value="0.1" min="0" max="1" step="0.01">
+</div>
+
+<script src='https://cdn.skyway.io/skyway.min.js'></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/svg.js/2.6.3/svg.min.js"></script>
+<script src="../../webaudio/AudioIndicator.js"></script>
+<script src="../../webaudio/Icon.js"></script>
+<script src="../../webaudio/VolumeController.js"></script>
+<script src="../../webaudio/webaudio.js"></script>
+<script src="main.js"></script>
+
+
+<script>
+const API_KEY = "--- Insert Your APIKey ---"
+var peer = new Peer({key: API_KEY})
+peer.on('open', console.log)
+
+var audioCtx = new AudioContext()
+
+var canvas = document.querySelector("canvas")
+var indicator = new Indicator(audioCtx, canvas)
+
+var controller = document.querySelector('div')
+var vc = new VolumeController(audioCtx, controller)
+
+sugoi(peer, audioCtx)
+  .then(source => {
+    source.connect(indicator.node)
+    source.connect(vc.node)
+  })
+</script>
+
+
+<style>
+div {
+    display: flex;
+}
+</style>
