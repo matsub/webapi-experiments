@@ -11,19 +11,11 @@ const config = {
 
 var localVideo = document.getElementById('local')
 var remoteVideo = document.getElementById('remote')
-var textForSendSdp = document.getElementById('sending')
-var textToReceiveSdp = document.getElementById('receiving')
 
 var pc = null
 
 
-function writeSdp(sessionDescription) {
-  textForSendSdp.value = sessionDescription.sdp
-  textForSendSdp.focus()
-  textForSendSdp.select()
-}
-
-async function prepareNewConnection() {
+async function prepareNewConnection(ws) {
   var pc = new RTCPeerConnection(config)
 
   pc.onaddstream = event => {
@@ -32,7 +24,7 @@ async function prepareNewConnection() {
 
   pc.onicecandidate = event => {
     if (event.candidate === null) {
-      writeSdp(pc.localDescription)
+      ws.send(pc.localDescription.sdp)
     }
   }
 
@@ -43,34 +35,39 @@ async function prepareNewConnection() {
   return pc
 }
 
-async function makeOffer() {
-  pc = await prepareNewConnection()
+async function offer() {
+  var ws = new WebSocket('ws://localhost:8001/')
+  ws.onmessage = msg => {
+    var sdp = msg.data
+    acceptAnswer(sdp)
+  }
+
+  pc = await prepareNewConnection(ws)
 
   var offer = await pc.createOffer()
   pc.setLocalDescription(offer)
 }
 
-function answerOffer() {
-  var sdp = textToReceiveSdp.value
-  _answerOffer(sdp)
+function acceptAnswer(sdp) {
+  var answer = new RTCSessionDescription({ type: 'answer', sdp })
+  pc.setRemoteDescription(answer)
 }
 
-async function _answerOffer(sdp) {
-  var offer = new RTCSessionDescription({ type : 'offer', sdp })
 
-  pc = await prepareNewConnection()
+async function answer() {
+  var ws = new WebSocket('ws://localhost:8001/')
+  ws.onmessage = msg => {
+    var sdp = msg.data
+    answerOffer(ws, sdp)
+  }
+}
+
+async function answerOffer(ws, sdp) {
+  var offer = new RTCSessionDescription({ type: 'offer', sdp })
+
+  pc = await prepareNewConnection(ws)
   await pc.setRemoteDescription(offer)
 
   var answer = await pc.createAnswer()
   pc.setLocalDescription(answer)
-}
-
-function acceptAnswer() {
-  var sdp = textToReceiveSdp.value
-  _acceptAnswer(sdp)
-}
-
-function _acceptAnswer(sdp) {
-  var answer = new RTCSessionDescription({ type : 'answer', sdp })
-  pc.setRemoteDescription(answer)
 }
