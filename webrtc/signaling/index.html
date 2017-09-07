@@ -3,7 +3,47 @@
   <video id="local" autoplay></video>
   <video id="remote" autoplay></video>
 </div>
-
 <button onclick="offer()">offer</button>
 <button onclick="answer()">answer</button>
-<script src="main.js"></script>
+
+
+<script src="peer.js"></script>
+<script>
+const constraints = {
+  video: { width: 160, height: 120 },
+  audio: false
+}
+
+var local = document.getElementById('local')
+var remote = document.getElementById('remote')
+var peer = new Peer()
+
+
+async function start() {
+  var stream = await navigator.mediaDevices.getUserMedia(constraints)
+  peer.addStream(stream)
+  local.srcObject = stream
+
+  peer.onaddstream = event => {
+    remote.srcObject = event.stream
+  }
+}
+
+async function offer() {
+  await start()
+  peer.offer()
+}
+
+async function answer() {
+  await start()
+  peer.answer()
+}
+</script>
+
+
+<style>
+video {
+  width: 160px;
+  height: 120px;
+}
+</style>

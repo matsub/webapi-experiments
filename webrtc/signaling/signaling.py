@@ -15,6 +15,7 @@ class Server:
         # recv offer
         sdp = await ws.recv()
         self.offer_sdp.put_nowait(sdp)
+        print('> Got offer SDP')
 
         # send answer
         sdp = await self.answer_sdp.get()
@@ -28,11 +29,14 @@ class Server:
         # recv answer
         sdp = await ws.recv()
         self.answer_sdp.put_nowait(sdp)
+        print('> Got answer SDP')
 
     async def handler(self, ws, path):
         if self.offer_sdp.empty():
+            print('Offer is empty')
             await self.offer(ws)
         else:
+            print('Offer is set')
             await self.answer(ws)
 
     def run(self):
