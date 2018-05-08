@@ -47,11 +47,11 @@ class Peer {
     this.pc.setLocalDescription(answer)
   }
 
-  addStream(stream) {
-    this.pc.addStream(stream)
+  addTrack(track, stream) {
+    this.pc.addTrack(track, stream)
   }
 
-  set onaddstream(eventHandler) {
-    this.pc.onaddstream = eventHandler
+  set ontrack(eventHandler) {
+    this.pc.ontrack = eventHandler
   }
 }

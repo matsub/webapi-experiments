@@ -21,11 +21,13 @@ var peer = new Peer()
 
 async function start() {
   var stream = await navigator.mediaDevices.getUserMedia(constraints)
-  peer.addStream(stream)
+  for (let track of stream.getTracks()) {
+    peer.addTrack(track, stream)
+  }
   local.srcObject = stream
 
-  peer.onaddstream = event => {
-    remote.srcObject = event.stream
+  peer.ontrack = event => {
+    remote.srcObject = event.streams[0]
   }
 }
 
