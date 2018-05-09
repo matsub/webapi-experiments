@@ -10,41 +10,44 @@ class Peer {
     this.pc = new RTCPeerConnection(config)
 
     this.pc.onicecandidate = event => {
-      if (event.candidate === null) {
-        var sdp = JSON.stringify(this.pc.localDescription)
-        this.socket.send(sdp)
-      }
+      console.log(event.candidate)
+      console.log(this.pc.localDescription)
     }
   }
 
   async offer() {
-    this.socket = new WebSocket('ws://localhost:8001/')
+    var socket = new WebSocket('ws://localhost:8001/')
     console.log('offering...')
-    this.socket.onmessage = msg => {
-      var sdp = JSON.parse(msg.data)
-      console.log(`got sdp: ${sdp.type}`)
-      this.pc.setRemoteDescription(sdp)
+    socket.onmessage = msg => {
+      var answer = JSON.parse(msg.data)
+      console.log(`got sdp: ${answer.type}`)
+      this.pc.setRemoteDescription(new RTCSessionDescription(answer))
     }
 
     var offer = await this.pc.createOffer()
-    this.pc.setLocalDescription(offer)
+    var offerDescription = new RTCSessionDescription(offer)
+    await this.pc.setLocalDescription(offerDescription)
+    socket.send(JSON.stringify(offer))
   }
 
   async answer() {
-    this.socket = new WebSocket('ws://localhost:8001/')
+    var socket = new WebSocket('ws://localhost:8001/')
     console.log('answering...')
-    this.socket.onmessage = msg => {
-      var sdp = JSON.parse(msg.data)
-      console.log(`got sdp: ${sdp.type}`)
-      this.answerOffer(sdp)
+    socket.onmessage = async msg => {
+      var offer = JSON.parse(msg.data)
+      console.log(`got sdp: ${offer.type}`)
+
+      // answering
+      await this.pc.setRemoteDescription(new RTCSessionDescription(offer))
+
+      var answer = await this.pc.createAnswer()
+      var answerDescription = new RTCSessionDescription(answer)
+      await this.pc.setLocalDescription(answerDescription)
+      socket.send(JSON.stringify(answer))
     }
   }
 
   async answerOffer(sdp) {
-    await this.pc.setRemoteDescription(sdp)
-
-    var answer = await this.pc.createAnswer()
-    this.pc.setLocalDescription(answer)
   }
 
   addTrack(track, stream) {
