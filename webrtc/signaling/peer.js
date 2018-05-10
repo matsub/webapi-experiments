@@ -10,18 +10,20 @@ class Peer {
     this.pc = new RTCPeerConnection(config)
 
     this.pc.onicecandidate = event => {
-      console.log(event.candidate)
-      console.log(this.pc.localDescription)
+      if (event.candidate) {
+        var icecandidate = JSON.stringify(event.candidate)
+        this.socket.send(icecandidate)
+      }
     }
   }
 
   async offer() {
     var socket = new WebSocket('ws://localhost:8001/')
     console.log('offering...')
-    socket.onmessage = msg => {
-      var answer = JSON.parse(msg.data)
-      console.log(`got sdp: ${answer.type}`)
-      this.pc.setRemoteDescription(new RTCSessionDescription(answer))
+    this.socket.onmessage = msg => {
+      var candidate = JSON.parse(msg.data)
+      console.log(`got candidate: ${candidate}`)
+      this.pc.addIceCandidate(candidate)
     }
 
     var offer = await this.pc.createOffer()
@@ -33,21 +35,11 @@ class Peer {
   async answer() {
     var socket = new WebSocket('ws://localhost:8001/')
     console.log('answering...')
-    socket.onmessage = async msg => {
-      var offer = JSON.parse(msg.data)
-      console.log(`got sdp: ${offer.type}`)
-
-      // answering
-      await this.pc.setRemoteDescription(new RTCSessionDescription(offer))
-
-      var answer = await this.pc.createAnswer()
-      var answerDescription = new RTCSessionDescription(answer)
-      await this.pc.setLocalDescription(answerDescription)
-      socket.send(JSON.stringify(answer))
+    this.socket.onmessage = async msg => {
+      var candidate = JSON.parse(msg.data)
+      console.log(`got candidate: ${candidate}`)
+      this.pc.addIceCandidate(candidate)
     }
-  }
-
-  async answerOffer(sdp) {
   }
 
   addTrack(track, stream) {
