@@ -1,0 +1,51 @@
+<!doctype html>
+<script>
+var pc1 = new RTCPeerConnection()
+var pc2 = new RTCPeerConnection()
+
+
+// create channel
+var channel = pc1.createDataChannel("chat");
+channel.onopen = event => {
+    channel.send(Date.now())
+}
+channel.onmessage = event => {
+    console.log("got a message from pc2!:")
+    console.log(event.data)
+}
+
+
+// set receiver
+pc2.ondatachannel = event => {
+    var channel = event.channel
+    channel.onopen = event => {
+        channel.send(Date.now())
+    }
+    channel.onmessage = function(event) {
+        console.log("got a message from pc1!:")
+        console.log(event.data)
+    }
+}
+
+
+// ICE handler
+pc1.onicecandidate = event => {
+    if (event.candidate) {
+        pc2.addIceCandidate(event.candidate)
+    }
+}
+pc2.onicecandidate = event => {
+    if (event.candidate) {
+        pc1.addIceCandidate(event.candidate)
+    }
+}
+
+
+// connection
+pc1.createOffer()
+    .then(offer => pc1.setLocalDescription(offer))
+    .then(() => pc2.setRemoteDescription(pc1.localDescription))
+    .then(() => pc2.createAnswer())
+    .then(answer => pc2.setLocalDescription(answer))
+    .then(() => pc1.setRemoteDescription(pc2.localDescription))
+</script>
