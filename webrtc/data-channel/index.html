@@ -5,8 +5,12 @@ var pc2 = new RTCPeerConnection()
 
 
 // create channel
+pc1.ondatachannel = event => {
+  console.warn("pc1: ondatachannelだよ")
+}
 var channel = pc1.createDataChannel("chat");
 channel.onopen = event => {
+  console.warn("onopenだよ")
     channel.send(Date.now())
 }
 channel.onmessage = event => {
@@ -17,6 +21,7 @@ channel.onmessage = event => {
 
 // set receiver
 pc2.ondatachannel = event => {
+  console.warn("pc2: ondatachannelだよ")
     var channel = event.channel
     channel.onopen = event => {
         channel.send(Date.now())
