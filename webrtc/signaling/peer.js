@@ -33,18 +33,15 @@ class Peer {
   async answer() {
     this.socket = new WebSocket('ws://localhost:8001/')
     console.log('answering...')
-    this.socket.onmessage = msg => {
+    this.socket.onmessage = async msg => {
       var sdp = JSON.parse(msg.data)
       console.log(`got sdp: ${sdp.type}`)
-      this.answerOffer(sdp)
+
+      await this.pc.setRemoteDescription(sdp)
+
+      var answer = await this.pc.createAnswer()
+      this.pc.setLocalDescription(answer)
     }
-  }
-
-  async answerOffer(sdp) {
-    await this.pc.setRemoteDescription(sdp)
-
-    var answer = await this.pc.createAnswer()
-    this.pc.setLocalDescription(answer)
   }
 
   addTrack(track, stream) {
