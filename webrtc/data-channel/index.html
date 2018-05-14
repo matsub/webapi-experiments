@@ -36,6 +36,7 @@ pc2.ondatachannel = event => {
 // ICE handler
 pc1.onicecandidate = event => {
     if (event.candidate) {
+        let ufrag = /ufrag (.+?) /.exec(event.candidate.candidate)
         pc2.addIceCandidate(event.candidate)
     }
 }
@@ -48,9 +49,15 @@ pc2.onicecandidate = event => {
 
 // connection
 pc1.createOffer()
+    .then(offer => {
+        pc2.setRemoteDescription(offer)
+        return offer
+    })
     .then(offer => pc1.setLocalDescription(offer))
-    .then(() => pc2.setRemoteDescription(pc1.localDescription))
     .then(() => pc2.createAnswer())
+    .then(answer => {
+        pc1.setRemoteDescription(answer)
+        return answer
+    })
     .then(answer => pc2.setLocalDescription(answer))
-    .then(() => pc1.setRemoteDescription(pc2.localDescription))
 </script>
