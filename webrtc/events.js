@@ -7,22 +7,26 @@ const iceConfig = {
 var pc1 = new RTCPeerConnection(iceConfig)
 var pc2 = new RTCPeerConnection(iceConfig)
 
-var stream
-navigator.mediaDevices.getUserMedia({video: true, audio: false}).then(s => stream = s)
+var stream = null
+var currentEvent = null
 
-function eventSnitcher
+function eventSnitcher (event) {
+  currentEvent = event
+  console.log(`=== ${event.type} ===`)
+  console.log(event)
+}
 
 // events of RTCPeerConnection
-pc1.onconnectionstatechange
-pc1.ondatachannel
-pc1.onicecandidate
-pc1.oniceconnectionstatechange
-pc1.onicegatheringstatechange
-pc1.onidentityresult
-pc1.onidpassertionerror
-pc1.onidpvalidationerror
-pc1.onnegotiationneeded
-pc1.onpeeridentity
-pc1.onremovestream
-pc1.onsignalingstatechange
-pc1.ontrack
+pc1.onconnectionstatechange = eventSnitcher
+pc1.ondatachannel = eventSnitcher
+pc1.onicecandidate = eventSnitcher
+pc1.oniceconnectionstatechange = eventSnitcher
+pc1.onicegatheringstatechange = eventSnitcher
+pc1.onidentityresult = eventSnitcher
+pc1.onidpassertionerror = eventSnitcher
+pc1.onidpvalidationerror = eventSnitcher
+pc1.onnegotiationneeded = eventSnitcher
+pc1.onpeeridentity = eventSnitcher
+pc1.onremovestream = eventSnitcher
+pc1.onsignalingstatechange = eventSnitcher
+pc1.ontrack = eventSnitcher
