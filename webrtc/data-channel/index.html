@@ -36,6 +36,7 @@ pc2.ondatachannel = event => {
 // ICE handler
 pc1.onicecandidate = event => {
     if (event.candidate) {
+        console.log(event.candidate)
         let ufrag = /ufrag (.+?) /.exec(event.candidate.candidate)
         pc2.addIceCandidate(event.candidate)
     }
