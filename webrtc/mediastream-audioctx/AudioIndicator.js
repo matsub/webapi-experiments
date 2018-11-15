@@ -54,7 +54,9 @@ class Indicator {
     const gradient = ctx.createLinearGradient(0, 0, this.width, 0)
 
     gradient.addColorStop(0,'#004400')
-    gradient.addColorStop(1,'#00ff00')
+    gradient.addColorStop(0.5,'#00ff44')
+    gradient.addColorStop(1,'#ff4400')
+
     ctx.fillStyle = gradient
     ctx.lineWidth = 4
     ctx.strokeStyle = "#ffffff"
@@ -67,7 +69,7 @@ class Indicator {
     ctx.clearRect(0, 0, this.width, this.height)
     ctx.fillRect(0, 0, strength*this.scale, this.height)
 
-    for (let x=0; x < this.width; x+=8*this.scale) {
+    for (let x=0; x < this.width; x+=8) {
       ctx.beginPath()
       ctx.moveTo(x, 0)
       ctx.lineTo(x, this.height)
@@ -98,16 +100,10 @@ class VolumeController {
 
 
 // main
-async function getStreamSource(audioCtx) {
-  const stream = await navigator.mediaDevices.getUserMedia(constraints)
-  return audioCtx.createMediaStreamSource(stream)
-}
-
-async function main() {
+function createIndicator (canvas, stream) {
   const audioCtx = new AudioContext()
 
   // create indicator
-  const canvas = document.querySelector("canvas")
   const indicator = new AudioIndicator(audioCtx, canvas)
 
   // create controller
@@ -115,9 +111,7 @@ async function main() {
   const controller = new VolumeController(audioCtx, controllerView)
 
   // connect audio context
-  const source = await getStreamSource(audioCtx)
+  const source = audioCtx.createMediaStreamSource(stream)
   source.connect(indicator.node)
   source.connect(controller.node)
 }
-
-main()
