@@ -1,0 +1,46 @@
+--- before.sdp	2018-06-15 16:43:48.000000000 +0900
++++ replaced.sdp	2018-06-15 16:44:06.000000000 +0900
+@@ -1,5 +1,5 @@
+ v=0
+-o=- 702900928760393049 2 IN IP4 127.0.0.1
++o=- 702900928760393049 3 IN IP4 127.0.0.1
+ s=-
+ t=0 0
+ a=group:BUNDLE video
+
+
+@@ -7,8 +7,8 @@
+ m=video 9 UDP/TLS/RTP/SAVPF 96 97 98 99 100 101 102 123 127 122 125 107 108 109 124
+ c=IN IP4 0.0.0.0
+ a=rtcp:9 IN IP4 0.0.0.0
+-a=ice-ufrag:WSHJ
+-a=ice-pwd:gkXfSq2dyGILrnqu+Ncscmu4
++a=ice-ufrag:pL+n
++a=ice-pwd:HTROXvH5iaNX9ibw33nrO8Xj
+ a=ice-options:trickle
+ a=fingerprint:sha-256 BE:24:6A:6B:DE:28:15:9D:2E:E0:F9:24:F1:F2:D3:A3:CC:DE:20:DE:AC:F8:A4:AF:12:69:3E:47:98:43:B8:85
+ a=setup:actpass
+
+
+@@ -79,12 +79,12 @@
+ a=rtpmap:109 rtx/90000
+ a=fmtp:109 apt=108
+ a=rtpmap:124 ulpfec/90000
+-a=ssrc-group:FID 2882516624 2699804291
+-a=ssrc:2882516624 cname:nHnvSKjUhCeXSMMu
+-a=ssrc:2882516624 msid:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm a8ddde99-a77d-4e75-a6f6-a7741f435f52
+-a=ssrc:2882516624 mslabel:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm
+-a=ssrc:2882516624 label:a8ddde99-a77d-4e75-a6f6-a7741f435f52
+-a=ssrc:2699804291 cname:nHnvSKjUhCeXSMMu
+-a=ssrc:2699804291 msid:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm a8ddde99-a77d-4e75-a6f6-a7741f435f52
+-a=ssrc:2699804291 mslabel:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm
+-a=ssrc:2699804291 label:a8ddde99-a77d-4e75-a6f6-a7741f435f52
++a=ssrc-group:FID 1500271087 1779194067
++a=ssrc:1500271087 cname:nHnvSKjUhCeXSMMu
++a=ssrc:1500271087 msid:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm a8ddde99-a77d-4e75-a6f6-a7741f435f52
++a=ssrc:1500271087 mslabel:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm
++a=ssrc:1500271087 label:a8ddde99-a77d-4e75-a6f6-a7741f435f52
++a=ssrc:1779194067 cname:nHnvSKjUhCeXSMMu
++a=ssrc:1779194067 msid:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm a8ddde99-a77d-4e75-a6f6-a7741f435f52
++a=ssrc:1779194067 mslabel:1GKNn3fRElqyCjYL4Q4b3cUTtR1l0jXxojqm
++a=ssrc:1779194067 label:a8ddde99-a77d-4e75-a6f6-a7741f435f52

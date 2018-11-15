@@ -9,6 +9,7 @@ pc1.ondatachannel = event => {
   console.warn("pc1: ondatachannelだよ")
 }
 var channel = pc1.createDataChannel("chat");
+var channel2 = pc2.createDataChannel("chot");
 channel.onopen = event => {
   console.warn("onopenだよ")
     channel.send(Date.now())
@@ -49,8 +50,15 @@ pc2.onicecandidate = event => {
 
 
 // connection
-pc1.createOffer()
+pc2.createOffer()
+    .then(offer => pc2.setLocalDescription(offer))
+    .then(() => {
+        pc2.localDescription = null
+        pc2.signalingState = "stable"
+    })
+    .then(() => pc1.createOffer())
     .then(offer => {
+        console.error(offer)
         pc2.setRemoteDescription(offer)
         return offer
     })
