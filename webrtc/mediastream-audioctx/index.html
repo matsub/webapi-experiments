@@ -1,15 +1,13 @@
 <!doctype html>
 <canvas id="canvas" width="320" height="20"></canvas>
-<div>
-  <input type="range" value="1" min="0" max="1" step="0.05">
-</div>
 <script src="AudioIndicator.js"></script>
+<script src="VolumeController.js"></script>
 <script>
 async function main() {
   const canvas = document.querySelector("canvas")
   const stream = await navigator.mediaDevices.getUserMedia(constraints)
 
-  createIndicator(canvas, stream)
+  attachIndicator(canvas, stream)
 }
 
 main()

@@ -3,11 +3,12 @@ const constraints = {
   audio: true
 }
 
-// AudioIndicator
+
 function getAverageVolume(array) {
   const sum = array.reduce((a,b)=>a+b, 0)
   return sum / array.length
 }
+
 
 class AudioIndicator {
   constructor(audioCtx, canvas) {
@@ -78,40 +79,14 @@ class Indicator {
   }
 }
 
-class VolumeController {
-  constructor(audioCtx, controllerView) {
-    const input = controllerView.querySelector('input')
 
-    input.addEventListener('input', e => {
-      this.gainNode.gain.value = input.value
-    })
-
-    const gainNode = audioCtx.createGain()
-    gainNode.gain.value = input.value
-    gainNode.connect(audioCtx.destination)
-
-    this.gainNode = gainNode
-  }
-
-  get node() {
-    return this.gainNode
-  }
-}
-
-
-// main
-function createIndicator (canvas, stream) {
+function attachIndicator (canvas, stream) {
   const audioCtx = new AudioContext()
 
   // create indicator
   const indicator = new AudioIndicator(audioCtx, canvas)
 
-  // create controller
-  const controllerView = document.querySelector('div')
-  const controller = new VolumeController(audioCtx, controllerView)
-
   // connect audio context
   const source = audioCtx.createMediaStreamSource(stream)
   source.connect(indicator.node)
-  source.connect(controller.node)
 }
