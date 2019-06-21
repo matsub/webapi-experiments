@@ -1,16 +1,10 @@
-const constraints = {
-  video: false,
-  audio: true
-}
-
-
 function getAverageVolume(array) {
   const sum = array.reduce((a,b)=>a+b, 0)
   return sum / array.length
 }
 
 
-class AudioIndicator {
+class VolumeIndicator {
   constructor(audioCtx, canvas) {
     const indicator = new Indicator(canvas)
 
@@ -80,11 +74,11 @@ class Indicator {
 }
 
 
-function attachIndicator (canvas, stream) {
+function attachVolumeIndicator (canvas, stream) {
   const audioCtx = new AudioContext()
 
   // create indicator
-  const indicator = new AudioIndicator(audioCtx, canvas)
+  const indicator = new VolumeIndicator(audioCtx, canvas)
 
   // connect audio context
   const source = audioCtx.createMediaStreamSource(stream)

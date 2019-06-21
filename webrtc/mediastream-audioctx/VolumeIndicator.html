@@ -1,0 +1,16 @@
+<!doctype html>
+<canvas id="canvas" width="320" height="20"></canvas>
+<script src="VolumeIndicator.js"></script>
+<script>
+async function main() {
+  const canvas = document.querySelector("canvas")
+  const stream = await navigator.mediaDevices.getUserMedia({
+    video: false,
+    audio: true
+  })
+
+  attachVolumeIndicator(canvas, stream)
+}
+
+main()
+</script>
